@@ -24,6 +24,12 @@ namespace FoodRecipe.Repositories
             return user;
         }
 
+        public User FindUserByEmail(string Email)
+        {
+            User user = _context.Users.FirstOrDefault(u => u.Email == Email);
+            return user;
+        }
+
         public bool DeleteUserById(int Id)
         {
             User user = _context.Users.FirstOrDefault(u => u.Id == Id);

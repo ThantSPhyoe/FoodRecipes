@@ -9,6 +9,8 @@ namespace FoodRecipe.Repositories
 
         User FindUserById(int Id);
 
+        User FindUserByEmail(string email);
+
         bool DeleteUserById(int id);
 
         User CreateUser(User userDto);

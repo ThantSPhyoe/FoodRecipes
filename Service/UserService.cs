@@ -3,6 +3,7 @@ using FoodRecipe.Models;
 using FoodRecipe.Dtos;
 using FoodRecipe.Utils;
 using Bedrock.Shared.Configuration;
+using FoodRecipe.Dtos.Request;
 
 namespace FoodRecipe.Service
 {
@@ -74,21 +75,21 @@ namespace FoodRecipe.Service
             }
         }
 
-        public User CreateUser(User user)
+        public User CreateUser(CreateUserRequestDto user)
         {
             try
             {
-                bool isExist = userRepository.FindUserById(user.Id) != null;
+                bool isExist = userRepository.FindUserByEmail(user.Email) != null;
                 if (isExist)
                 {
-                    throw new InvalidOperationException($"ユーザーは既に存在します。ID: {user.Id}");
+                    throw new InvalidOperationException($"This {user.Email} email is already used.");
                 }
                 string hashedPassword = Hash.HashPassword(user.Password);
                 User newUser = userRepository.CreateUser(new User
                 {
                     Password = hashedPassword,
                     Email = user.Email,
-                    Username = user.Username,
+                    Username = user.UserName,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 });

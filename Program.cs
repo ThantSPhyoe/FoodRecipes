@@ -1,6 +1,8 @@
 using FoodRecipe.Data;
 using FoodRecipe.Repositories;
 using FoodRecipe.Service;
+using FoodRecipe.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +13,25 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     )
 );
 
-// Add services to the container.
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions( options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(kvp => kvp.Value.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
 
-builder.Services.AddControllers();
+            var payload = new { errors };
+
+            var apiResponse = new ApiResponse<object>(false, "Validation failed", payload);
+
+            return new BadRequestObjectResult(apiResponse);
+        };
+    });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();

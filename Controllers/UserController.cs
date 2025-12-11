@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FoodRecipe.Controllers.BaseController;
+using FoodRecipe.Dtos;
+using FoodRecipe.Dtos.Request;
 using FoodRecipe.Models;
 using FoodRecipe.Service;
-using FoodRecipe.Controllers.BaseController;
-using FoodRecipe.Dtos;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FoodRecipe.Controllers
 {
@@ -70,15 +71,21 @@ namespace FoodRecipe.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddUser([FromBody] User user)
+        public IActionResult AddUser([FromBody] CreateUserRequestDto userDto)
         {
             try
             {
-                var result = userService.CreateUser(user);
-                if (result == null) return 
+                var result = userService.CreateUser(userDto);
+                if (result == null) return UnprocessableEntity();
+                return Sucess(new UserDto
                 {
-                    
-                }
+                    Id = result.Id,
+                    UserName = result.Username,
+                    Email = result.Email
+                });
+            }catch(InvalidOperationException Ioe)
+            {
+                return Conflict(Ioe.Message);
             }
             catch(Exception ex)
             {
