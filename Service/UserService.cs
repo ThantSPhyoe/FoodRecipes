@@ -2,7 +2,6 @@
 using FoodRecipe.Models;
 using FoodRecipe.Dtos;
 using FoodRecipe.Utils;
-using Bedrock.Shared.Configuration;
 using FoodRecipe.Dtos.Request;
 
 namespace FoodRecipe.Service
@@ -96,6 +95,52 @@ namespace FoodRecipe.Service
 
                 return newUser;
             }catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public UserDto updateUser(UpdateUserRequestDto dto)
+        {
+            try
+            {
+                User user = userRepository.FindUserById(dto.Id);
+                if (user == null)
+                {
+                    throw new InvalidOperationException($"User not found. ID: {dto.Id}");
+                }
+
+                if (!string.IsNullOrWhiteSpace(dto.Email))
+                {
+                    var byEmail = userRepository.FindUserByEmail(user.Email);
+
+                    if(byEmail != null && byEmail.Id != user.Id)
+                    {
+                        throw new InvalidOperationException($"This {user.Email} email is already used.");
+                    }
+                    user.Email = dto.Email;
+                }
+
+                if (!string.IsNullOrWhiteSpace(dto.UserName))
+                {
+                    user.Username = dto.UserName;
+                }
+                
+                var updatedUser = userRepository.UpdateUser(user);
+
+                if(updatedUser == null)
+                {
+                    throw new InvalidOperationException($"Failed to update user. ID: {user.Id}");
+                }
+
+                return new UserDto
+                {
+                    Id = updatedUser.Id,
+                    UserName = updatedUser.Username,
+                    Email = updatedUser.Email
+                };
+            }
+            catch(Exception ex)
             {
                 throw;
             }

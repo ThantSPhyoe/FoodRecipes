@@ -15,6 +15,6 @@ namespace FoodRecipe.Repositories
 
         User CreateUser(User userDto);
 
-        User UpdateUser(int id, User userDto);
+        User UpdateUser(User userDto);
     }
 }

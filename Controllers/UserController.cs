@@ -92,5 +92,23 @@ namespace FoodRecipe.Controllers
                 return Error(ex.Message);
             }
         }
+
+        [HttpPut]
+        public IActionResult UpdateUser([FromBody]UpdateUserRequestDto updateUserRequestDto)
+        {
+            try
+            {
+                UserDto user = userService.updateUser(updateUserRequestDto);
+                return Sucess(user);
+            }catch(InvalidOperationException ioe)
+            {
+                return UnprocessableEntity(ioe.Message);
+            }
+            catch (Exception ex)
+            {
+                return Error(ex.Message);
+            }
+
+        }
     }
 }

@@ -39,10 +39,11 @@ namespace FoodRecipe.Repositories
             return true;
         }
 
-        public User UpdateUser(int Id, User User)
+        public User UpdateUser(User User)
         {
-            User _user = new User();
-            return _user;
+            _context.Users.Update(User);
+            _context.SaveChanges();
+            return User;
         }
 
         public User CreateUser(User user)
