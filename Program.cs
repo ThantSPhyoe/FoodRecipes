@@ -34,6 +34,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<UserService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
