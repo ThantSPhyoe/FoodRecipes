@@ -8,7 +8,7 @@ namespace FoodRecipe.Dtos
         public string Difficulty { get; set; }
         public string ImageUrl { get; set; }
         public int UserId { get; set; }
-        public System.DateTime CreatedAt { get; set; }
-        public System.DateTime UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

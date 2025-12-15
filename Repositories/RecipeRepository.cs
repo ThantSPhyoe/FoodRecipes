@@ -1,5 +1,6 @@
 using FoodRecipe.Data;
 using FoodRecipe.Models;
+using FoodRecipe.Service;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,29 @@ namespace FoodRecipe.Repositories
             _context.Recipes.Remove(existing);
             _context.SaveChanges();
             return true;
+        }
+
+        public int GetTotalRecipesCount()
+        {
+            return _context.Recipes.Count();
+        }
+
+        public List<Recipe> GetOnlyThreeRecipes()
+        {
+            return _context.Recipes
+                .Include(r => new Recipe
+                {
+                    Id = r.Id,
+                    Title = r.Title,
+                    Description = r.Description,
+                    Difficulty = r.Difficulty,
+                    ImageUrl = r.ImageUrl,
+                    UserId = r.UserId,
+                    CreatedAt = r.CreatedAt,
+                    UpdatedAt   = r.UpdatedAt
+                })
+                .Take(3)
+                .ToList();
         }
     }
 }
