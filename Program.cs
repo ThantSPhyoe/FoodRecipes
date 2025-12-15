@@ -35,7 +35,10 @@ builder.Services.AddControllers()
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<IngredientService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

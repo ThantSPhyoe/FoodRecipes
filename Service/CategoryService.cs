@@ -67,6 +67,7 @@ namespace FoodRecipe.Service
                 var updatedCategory = categoryRepository.UpdateCategory(category);
                 return new CategoryDto
                 {
+                    Id = updatedCategory.Id,
                     Name = updatedCategory.Name
                 };
             }

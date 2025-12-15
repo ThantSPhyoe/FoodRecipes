@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodRecipe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251209085138_initial migration")]
+    [Migration("20251215031730_initial migration")]
     partial class initialmigration
     {
         /// <inheritdoc />
@@ -33,9 +33,15 @@ namespace FoodRecipe.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

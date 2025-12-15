@@ -25,16 +25,10 @@ namespace FoodRecipe.Repositories
         }
 
         public Categories CreateCategory(Categories category)
-        {
-            Categories _category = new Categories
-            {
-                Name = category.Name,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            };
-            _context.Add(_category);
+        { 
+            _context.Add(category);
             _context.SaveChanges();
-            return _category;
+            return category;
         }
 
         public Categories UpdateCategory(Categories category)
