@@ -10,6 +10,12 @@ namespace FoodRecipe.Models
         public string Difficulty { get; set; }
         public string ImageUrl { get; set; }
 
+        public string ServeSize { get; set; }
+
+        public string VideoUrl { get; set; }
+
+        public string TimeRequired { get; set; }
+
         public int UserId { get; set; }
         public User User { get; set; }
 

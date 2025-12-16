@@ -14,5 +14,7 @@ namespace FoodRecipe.Repositories
         int GetTotalRecipesCount();
 
         List<Recipe> GetOnlyThreeRecipes();
+
+        List<Recipe> GetAllRecipes();
     }
 }

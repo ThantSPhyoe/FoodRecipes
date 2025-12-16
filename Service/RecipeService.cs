@@ -11,10 +11,12 @@ namespace FoodRecipe.Service
     public class RecipeService
     {
         private readonly IRecipeRepository recipeRepository;
+        private readonly ICategoryRepository categoryRepository;
 
-        public RecipeService(IRecipeRepository recipeRepository)
+        public RecipeService(IRecipeRepository recipeRepository, ICategoryRepository categoryRepository)
         {
             this.recipeRepository = recipeRepository;
+            this.categoryRepository = categoryRepository;
         }
 
         public RecipeDto CreateRecipe(CreateRecipeRequestDto dto)
@@ -91,12 +93,72 @@ namespace FoodRecipe.Service
             return MapToDto(recipe);
         }
 
-        public void GetAllDataForHomePage()
+        public HomePageDto GetAllDataForHomePage()
         {
             try
             {
-                
+                int Count = recipeRepository.GetTotalRecipesCount();
+
+                List<Categories> Category = categoryRepository.GetAllCategories();
+                List<Recipe> FirstThreeRecipe = recipeRepository.GetOnlyThreeRecipes();
+
+                return new HomePageDto
+                {
+                    Count = Count,
+                    Category = Category.Select(c => new CategoryDto
+                    {
+                        Id = c.Id,
+                        Name = c.Name
+                    }).ToList(),
+                    Recipes = FirstThreeRecipe.Select(r => new RecipeDto
+                    {
+                        Id = r.Id,
+                        Title = r.Title,
+                        Description = r.Description,
+                        Difficulty = r.Difficulty,
+                        ImageUrl = r.ImageUrl,
+                        UserId = r.UserId,
+                        UserName = r.User != null ? r.User.Username : string.Empty,
+                        CreatedAt = r.CreatedAt,
+                        UpdatedAt = r.UpdatedAt
+
+                    }).ToList()
+                };
             }catch
+            {
+                throw;
+            }
+        }
+
+        public CategoryRecipeDto GetALLCategoryRecipe()
+        {
+            try
+            {
+               List<Categories> Category = categoryRepository.GetAllCategories();
+               List<Recipe> Recipe = recipeRepository.GetAllRecipes();
+                return new CategoryRecipeDto
+                {
+                     category = Category.Select(c => new CategoryDto
+                     {
+                          Id = c.Id,
+                          Name = c.Name
+                     }).ToList(),
+                     recipe = Recipe.Select(r => new RecipeDto
+                     {
+                          Id = r.Id,
+                          Title = r.Title,
+                          Description = r.Description,
+                          Difficulty = r.Difficulty,
+                          ImageUrl = r.ImageUrl,
+                          UserId = r.UserId,
+                          UserName = r.User != null ? r.User.Username : string.Empty,
+                          CreatedAt = r.CreatedAt,
+                          UpdatedAt = r.UpdatedAt
+    
+                     }).ToList()
+                };
+            }
+            catch(Exception ex)
             {
                 throw;
             }

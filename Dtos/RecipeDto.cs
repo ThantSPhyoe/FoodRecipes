@@ -1,3 +1,5 @@
+using FoodRecipe.Models;
+
 namespace FoodRecipe.Dtos
 {
     public class RecipeDto
@@ -7,6 +9,8 @@ namespace FoodRecipe.Dtos
         public string Description { get; set; }
         public string Difficulty { get; set; }
         public string ImageUrl { get; set; }
+
+        public string UserName { get; set; }
         public int UserId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

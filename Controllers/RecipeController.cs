@@ -103,11 +103,25 @@ namespace FoodRecipe.Controllers
             }
         }
 
+        [HttpGet("HomePageInfo")]
         public IActionResult GetAllInformationForHomePage()
         {
             try
             {
-                return Sucess('ok');
+                var result = recipeService.GetAllDataForHomePage();
+                return Sucess(result);
+            }catch(Exception ex)
+            {
+                return Error(ex.Message);
+            }
+        }
+
+        public IActionResult GetAllRecipes()
+        {
+            try
+            {
+
+                return Sucess("OK");
             }catch(Exception ex)
             {
                 return Error(ex.Message);

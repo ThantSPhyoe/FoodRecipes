@@ -16,6 +16,11 @@ namespace FoodRecipe.Repositories
             _context = context;
         }
 
+        public List<Recipe> GetAllRecipe()
+        {
+            return _context.Recipes.ToList();
+        }
+
         public Recipe FindById(int id)
         {
             return _context.Recipes
@@ -76,17 +81,7 @@ namespace FoodRecipe.Repositories
         public List<Recipe> GetOnlyThreeRecipes()
         {
             return _context.Recipes
-                .Include(r => new Recipe
-                {
-                    Id = r.Id,
-                    Title = r.Title,
-                    Description = r.Description,
-                    Difficulty = r.Difficulty,
-                    ImageUrl = r.ImageUrl,
-                    UserId = r.UserId,
-                    CreatedAt = r.CreatedAt,
-                    UpdatedAt   = r.UpdatedAt
-                })
+                .Include(u => u.User)
                 .Take(3)
                 .ToList();
         }
