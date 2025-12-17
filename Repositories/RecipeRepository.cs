@@ -16,7 +16,7 @@ namespace FoodRecipe.Repositories
             _context = context;
         }
 
-        public List<Recipe> GetAllRecipe()
+        public List<Recipe> GetAllRecipes()
         {
             return _context.Recipes.ToList();
         }
@@ -46,7 +46,7 @@ namespace FoodRecipe.Repositories
                 .Include(r => r.RecipeIngredients)
                 .Include(r => r.Steps)
                 .Include(r => r.RecipeCategories)
-                .Where(r => r.Title.ToLower().Contains(query) || r.Description.ToLower().Contains(query) || r.Difficulty.ToLower().Contains(query))
+                .Where(r => r.Title.ToLower().Contains(query) || r.Description.ToLower().Contains(query) || r.Difficulty.ToString().ToLower().Contains(query))
                 .ToList();
         }
 
@@ -82,6 +82,8 @@ namespace FoodRecipe.Repositories
         {
             return _context.Recipes
                 .Include(u => u.User)
+                .Include(r => r.RecipeCategories)
+                .ThenInclude(rc => rc.Category)
                 .Take(3)
                 .ToList();
         }

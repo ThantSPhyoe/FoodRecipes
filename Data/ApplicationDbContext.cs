@@ -50,9 +50,9 @@ namespace FoodRecipe.Data
                 .WithMany(u => u.Recipes)
                 .HasForeignKey(r => r.UserId);
 
-            //modelBuilder.Entity<Recipe>()
-            //    .Property(r => r.Difficulty)
-            //    .HasConversion<string>();
+            modelBuilder.Entity<Recipe>()
+                .Property(r => r.Difficulty)
+                .HasConversion<string>();
         }
     }
 }

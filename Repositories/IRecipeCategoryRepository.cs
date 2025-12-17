@@ -10,5 +10,7 @@ namespace FoodRecipe.Repositories
         RecipeCategories Update(RecipeCategories entity);
         bool Delete(int recipeId, int categoryId);
         List<RecipeCategories> SearchByRecipe(int recipeId);
+
+        int CreateWithValidation(int recipeId, IEnumerable<int> categoryIds);
     }
 }

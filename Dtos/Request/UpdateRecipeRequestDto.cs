@@ -1,3 +1,4 @@
+using FoodRecipe.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace FoodRecipe.Dtos.Request
@@ -12,8 +13,17 @@ namespace FoodRecipe.Dtos.Request
 
         public string Description { get; set; }
 
-        public string Difficulty { get; set; }
+        public DifficultyLevel Difficulty { get; set; }
 
         public string ImageUrl { get; set; }
+
+        public string ServeSize { get; set; }
+
+        public string VideoUrl { get; set; }
+
+        public string TimeRequired { get; set; }
+
+        [Required]
+        public required int UserId { get; set; }
     }
 }

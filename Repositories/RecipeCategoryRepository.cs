@@ -1,7 +1,6 @@
 using FoodRecipe.Data;
 using FoodRecipe.Models;
-using System.Collections.Generic;
-using System.Linq;
+
 
 namespace FoodRecipe.Repositories
 {
@@ -46,6 +45,39 @@ namespace FoodRecipe.Repositories
         public List<RecipeCategories> SearchByRecipe(int recipeId)
         {
             return _context.RecipeCategories.Where(rc => rc.RecipeId == recipeId).ToList();
+        }
+
+        public int CreateWithValidation(int recipeId, IEnumerable<int> categoryIds)
+        {
+            var distinctCategoryIds = categoryIds.Distinct().ToList();
+
+            var existingCategoryIds = _context.Categories
+                .Where(c => distinctCategoryIds.Contains(c.Id))
+                .Select(c => c.Id)
+                .ToList();
+
+            var missingCategoryIds = distinctCategoryIds
+                .Except(existingCategoryIds).ToList();
+
+            if (missingCategoryIds.Any())
+            {
+                throw new InvalidOperationException(
+                    $"Invalid CategoryId(s): {string.Join(", ", missingCategoryIds)}"
+                );
+            }
+
+            var recipeCategories = distinctCategoryIds.Select(categoryId =>
+            new RecipeCategories
+            {
+                RecipeId = recipeId,
+                CategoryId = categoryId
+            }).ToList();
+
+            _context.RecipeCategories.AddRange(recipeCategories);
+            var result = _context.SaveChanges();
+
+            return result;
+
         }
     }
 }

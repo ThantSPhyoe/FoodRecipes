@@ -1,10 +1,10 @@
+using Bedrock.Shared.Configuration;
+using FoodRecipe.Data;
 using FoodRecipe.Dtos;
 using FoodRecipe.Dtos.Request;
 using FoodRecipe.Models;
 using FoodRecipe.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodRecipe.Service
 {
@@ -12,11 +12,15 @@ namespace FoodRecipe.Service
     {
         private readonly IRecipeRepository recipeRepository;
         private readonly ICategoryRepository categoryRepository;
+        private readonly IRecipeCategoryRepository recipeCategoryRepository;
+        private readonly IUserRepository userRepository;
 
-        public RecipeService(IRecipeRepository recipeRepository, ICategoryRepository categoryRepository)
+        public RecipeService(IRecipeRepository recipeRepository, ICategoryRepository categoryRepository, IRecipeCategoryRepository recipeCategoryRepository, IUserRepository userRepository)
         {
             this.recipeRepository = recipeRepository;
             this.categoryRepository = categoryRepository;
+            this.recipeCategoryRepository = recipeCategoryRepository;
+            this.userRepository = userRepository;
         }
 
         public RecipeDto CreateRecipe(CreateRecipeRequestDto dto)
@@ -24,18 +28,28 @@ namespace FoodRecipe.Service
             try
             {
                 var now = DateTime.UtcNow;
+                var existingUser = userRepository.FindUserById(dto.UserId);
+                if (existingUser == null) throw new InvalidOperationException($"User not found. ID: {dto.UserId}");
+
                 var recipe = new Recipe
                 {
                     Title = dto.Title,
                     Description = dto.Description,
                     Difficulty = dto.Difficulty,
                     ImageUrl = dto.ImageUrl,
+                    ServeSize = dto.ServeSize,
+                    VideoUrl = dto.VideoUrl,
+                    TimeRequired = dto.TimeRequired,
                     UserId = dto.UserId,
                     CreatedAt = now,
                     UpdatedAt = now
                 };
 
                 var created = recipeRepository.Create(recipe);
+                if (created == null) throw new InvalidOperationException("Failed to create recipe.");
+
+                var result = recipeCategoryRepository.CreateWithValidation(created.Id, dto.CategoryId);
+                if (result <= 0) throw new InvalidOperationException("Failed to associate categories");
                 return MapToDto(created);
             }
             catch
@@ -51,10 +65,17 @@ namespace FoodRecipe.Service
                 var existing = recipeRepository.FindById(dto.Id);
                 if (existing == null) throw new InvalidOperationException($"Recipe not found. ID: {dto.Id}");
 
+                var existingUser = userRepository.FindUserById(dto.UserId);
+                if (existingUser == null) throw new InvalidOperationException($"User not found. ID: {dto.UserId}");
+
                 existing.Title = dto.Title;
                 existing.Description = dto.Description;
                 existing.Difficulty = dto.Difficulty;
                 existing.ImageUrl = dto.ImageUrl;
+                existing.ServeSize = dto.ServeSize;
+                existing.VideoUrl = dto.VideoUrl;
+                existing.TimeRequired = dto.TimeRequired;
+                existing.UserId = dto.UserId;
                 existing.UpdatedAt = DateTime.UtcNow;
 
                 var updated = recipeRepository.Update(existing);
@@ -102,6 +123,7 @@ namespace FoodRecipe.Service
                 List<Categories> Category = categoryRepository.GetAllCategories();
                 List<Recipe> FirstThreeRecipe = recipeRepository.GetOnlyThreeRecipes();
 
+                
                 return new HomePageDto
                 {
                     Count = Count,
@@ -115,8 +137,12 @@ namespace FoodRecipe.Service
                         Id = r.Id,
                         Title = r.Title,
                         Description = r.Description,
-                        Difficulty = r.Difficulty,
+                        Difficulty = r.Difficulty.ToString(),
                         ImageUrl = r.ImageUrl,
+                        ServeSize = r.ServeSize,
+                        VideoUrl = r.VideoUrl,
+                        TimeRequired = r.TimeRequired,
+                        CategoryName =  r.RecipeCategories.Select( rc => rc.Category.Name).FirstOrDefault() ?? string.Empty,
                         UserId = r.UserId,
                         UserName = r.User != null ? r.User.Username : string.Empty,
                         CreatedAt = r.CreatedAt,
@@ -136,6 +162,7 @@ namespace FoodRecipe.Service
             {
                List<Categories> Category = categoryRepository.GetAllCategories();
                List<Recipe> Recipe = recipeRepository.GetAllRecipes();
+
                 return new CategoryRecipeDto
                 {
                      category = Category.Select(c => new CategoryDto
@@ -148,9 +175,15 @@ namespace FoodRecipe.Service
                           Id = r.Id,
                           Title = r.Title,
                           Description = r.Description,
-                          Difficulty = r.Difficulty,
+                          Difficulty = r.Difficulty.ToString(),
                           ImageUrl = r.ImageUrl,
-                          UserId = r.UserId,
+                          ServeSize = r.ServeSize,
+                          TimeRequired = r.TimeRequired,
+                          VideoUrl = r.VideoUrl,
+                         CategoryName = r.RecipeCategories != null && r.RecipeCategories.Any()
+                    ? string.Join(", ", r.RecipeCategories.Select(rc => rc.Category.Name))
+                    : string.Empty,
+                         UserId = r.UserId,
                           UserName = r.User != null ? r.User.Username : string.Empty,
                           CreatedAt = r.CreatedAt,
                           UpdatedAt = r.UpdatedAt
@@ -172,8 +205,15 @@ namespace FoodRecipe.Service
                 Id = r.Id,
                 Title = r.Title,
                 Description = r.Description,
-                Difficulty = r.Difficulty,
+                Difficulty = r.Difficulty.ToString(),
                 ImageUrl = r.ImageUrl,
+                ServeSize = r.ServeSize,
+                VideoUrl = r.VideoUrl,
+                CategoryName  = r.RecipeCategories != null && r.RecipeCategories.Any()
+                    ? string.Join(", ", r.RecipeCategories.Select(rc => rc.Category.Name))
+                    : string.Empty,
+                TimeRequired = r.TimeRequired,
+                UserName = r.User != null ? r.User.Username : string.Empty,
                 UserId = r.UserId,
                 CreatedAt = r.CreatedAt,
                 UpdatedAt = r.UpdatedAt

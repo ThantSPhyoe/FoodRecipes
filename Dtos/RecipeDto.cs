@@ -10,6 +10,14 @@ namespace FoodRecipe.Dtos
         public string Difficulty { get; set; }
         public string ImageUrl { get; set; }
 
+        public string ServeSize { get; set; }
+
+        public string VideoUrl { get; set; }
+
+        public string TimeRequired { get; set; }
+
+        public string CategoryName { get; set; }
+
         public string UserName { get; set; }
         public int UserId { get; set; }
         public DateTime CreatedAt { get; set; }

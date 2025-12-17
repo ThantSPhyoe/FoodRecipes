@@ -7,7 +7,7 @@ namespace FoodRecipe.Models
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Difficulty { get; set; }
+        public DifficultyLevel Difficulty { get; set; }
         public string ImageUrl { get; set; }
 
         public string ServeSize { get; set; }
