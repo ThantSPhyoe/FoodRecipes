@@ -127,5 +127,16 @@ namespace FoodRecipe.Controllers
                 return Error(ex.Message);
             }
         }
+
+        public IActionResult AddRecipe([FromBody] CreateAddRecipesRequestDto dto)
+        {
+            try
+            {
+                return Sucess('OK');
+            }catch(Exception ex)
+            {
+                return Error(ex.Message);
+            }
+        } 
     }
 }
