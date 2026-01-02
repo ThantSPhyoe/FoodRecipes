@@ -47,13 +47,14 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 builder.Services.AddScoped<IRecipeIngredientRepository, RecipeIngredientRepository>();
+builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
+builder.Services.AddScoped<IRecipeCategoryRepository, RecipeCategoryRepository>();
+builder.Services.AddScoped<IMinioService, MinioService>();
 builder.Services.AddScoped<RecipeIngredientService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<IngredientService>();
-builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<RecipeService>();
-builder.Services.AddScoped<IRecipeCategoryRepository, RecipeCategoryRepository>();
 builder.Services.AddScoped<RecipeCategoryService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

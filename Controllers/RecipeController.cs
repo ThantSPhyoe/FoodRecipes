@@ -18,7 +18,7 @@ namespace FoodRecipe.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateRecipe([FromBody] CreateRecipeRequestDto createDto)
+        public IActionResult CreateRecipe([FromBody] CreateRecipeRequestDto createDto, IFormFile formFile)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace FoodRecipe.Controllers
         {
             try
             {
-                return Sucess('OK');
+                return Sucess("OK");
             }catch(Exception ex)
             {
                 return Error(ex.Message);
